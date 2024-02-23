@@ -19,18 +19,18 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class DemoApplicationRestTests {
+class DemoApplicationRestTests {
 
     private static final String API_ROOT = "http://localhost:8081/api/books";
 
     @Test
-    public void whenGetAllBooks_thenOK() {
+    void whenGetAllBooks_thenOK() {
         final Response response = RestAssured.get(API_ROOT);
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
     }
 
     @Test
-    public void whenGetBooksByTitle_thenOK() {
+    void whenGetBooksByTitle_thenOK() {
         final Book book = createRandomBook();
         createBookAsUri(book);
 
@@ -40,7 +40,7 @@ public class DemoApplicationRestTests {
     }
 
     @Test
-    public void whenGetCreatedBookById_thenOK() {
+    void whenGetCreatedBookById_thenOK() {
         final Book book = createRandomBook();
         final String location = createBookAsUri(book);
 
@@ -51,14 +51,14 @@ public class DemoApplicationRestTests {
     }
 
     @Test
-    public void whenGetNotExistBookById_thenNotFound() {
+    void whenGetNotExistBookById_thenNotFound() {
         final Response response = RestAssured.get(API_ROOT + "/" + randomNumeric(4));
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 
     // POST
     @Test
-    public void whenCreateNewBook_thenCreated() {
+    void whenCreateNewBook_thenCreated() {
         final Book book = createRandomBook();
 
         final Response response = RestAssured.given()
@@ -69,7 +69,7 @@ public class DemoApplicationRestTests {
     }
 
     @Test
-    public void whenInvalidBook_thenError() {
+    void whenInvalidBook_thenError() {
         final Book book = createRandomBook();
         book.setAuthor(null);
 
@@ -81,7 +81,7 @@ public class DemoApplicationRestTests {
     }
 
     @Test
-    public void whenUpdateCreatedBook_thenUpdated() {
+    void whenUpdateCreatedBook_thenUpdated() {
         final Book book = createRandomBook();
         final String location = createBookAsUri(book);
 
@@ -101,7 +101,22 @@ public class DemoApplicationRestTests {
     }
 
     @Test
-    public void whenDeleteCreatedBook_thenOk() {
+    void whenUpdateNotExistingBook_thenBookIdMismatchExceptionIsThrown() {
+        final Book book = createRandomBook();
+        final String location = createBookAsUri(book);
+
+        book.setId(21);
+        book.setAuthor("newAuthor");
+        Response response = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(book)
+                .put(location);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode());
+    }
+
+
+    @Test
+    void whenDeleteCreatedBook_thenOk() {
         final Book book = createRandomBook();
         final String location = createBookAsUri(book);
 
@@ -112,6 +127,21 @@ public class DemoApplicationRestTests {
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 
+    @Test
+    void whenCreatedConcreteBook_thenAttributesAreOK() {
+        final Book book = createLordOfTheRingsBook();
+        assertNotEquals( 0, book.hashCode() );
+        assertTrue( book.toString().endsWith( ", title=The Lord of The Rings, author=J.R.Tolkien]" ) );
+    }
+
+    @Test
+    void whenConcreteBookComparesToEmptyBook_thenComparisonIsOK() {
+        final Book book  = createLordOfTheRingsBook();
+        final Book empty = createEmptyBook();
+        assertNotEquals( 0, empty.hashCode() );
+        assertNotEquals( book, empty );
+    }
+
     // ===============================
 
     private Book createRandomBook() {
@@ -119,6 +149,17 @@ public class DemoApplicationRestTests {
         book.setTitle(randomAlphabetic(10));
         book.setAuthor(randomAlphabetic(15));
         return book;
+    }
+
+    private Book createEmptyBook() {
+        final Book book = new Book();
+        book.setTitle(randomAlphabetic(10));
+        book.setAuthor(randomAlphabetic(15));
+        return book;
+    }
+
+    private Book createLordOfTheRingsBook() {
+        return new Book( "The Lord of The Rings", "J.R.Tolkien" );
     }
 
     private String createBookAsUri(Book book) {

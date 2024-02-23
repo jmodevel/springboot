@@ -4,7 +4,6 @@ import com.jmo.devel.demo.exception.BookIdMismatchException;
 import com.jmo.devel.demo.exception.BookNotFoundException;
 import com.jmo.devel.demo.model.Book;
 import com.jmo.devel.demo.repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,21 +13,24 @@ import java.util.List;
 @RequestMapping("/api/books")
 public class BookController {
 
-    @Autowired
     private BookRepository bookRepository;
 
+    public BookController( BookRepository bookRepository ){
+        this.bookRepository = bookRepository;
+    }
+
     @GetMapping
-    public Iterable findAll() {
+    public Iterable<Book> findAll() {
         return bookRepository.findAll();
     }
 
     @GetMapping("/title/{bookTitle}")
-    public List findByTitle(@PathVariable String bookTitle) {
+    public List<Book> findByTitle(@PathVariable String bookTitle) {
         return bookRepository.findByTitle(bookTitle);
     }
 
     @GetMapping("/{id}")
-    public Book findOne(@PathVariable Long id) {
+    public Book findOne(@PathVariable Long id) throws BookNotFoundException {
         return bookRepository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
     }
@@ -40,14 +42,14 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws BookIdMismatchException {
         bookRepository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
         bookRepository.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    public Book updateBook(@RequestBody Book book, @PathVariable Long id) {
+    public Book updateBook(@RequestBody Book book, @PathVariable Long id) throws BookIdMismatchException, BookNotFoundException {
         if (book.getId() != id) {
             throw new BookIdMismatchException();
         }
