@@ -120,7 +120,9 @@ class BooksRepositoryTest {
         authors.save(
             Author.builder().name( "Federico" ).surnames( "García Lorca" ).build()
         );
-        Optional<Author> author = authors.findBySurnames( "García Lorca" );
+        Optional<Author> author = authors
+            .findByNameContainingIgnoreCaseAndSurnamesContainingIgnoreCase(
+                "Federico", "García Lorca" );
         assertThat( author ).isPresent();
 
         Author a = author.get();

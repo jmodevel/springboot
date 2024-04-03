@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "author")
+@Table(name = "author", uniqueConstraints = { @UniqueConstraint(columnNames = { "name", "surnames" }) })
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

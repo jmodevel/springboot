@@ -21,31 +21,31 @@ class AuthorsRepositoryTest {
     private AuthorsRepository repository;
 
     @Test
-    void givenName_whenFindByName_thenAuthorIsReturned(){
+    void givenName_whenFindByName_thenAuthorsAreReturned(){
         repository.save(
             Author.builder()
                 .name( "Jorge Luis" )
                 .surnames( "Borges" )
                 .build()
         );
-        Optional<Author> author = repository.findByName( "Jorge Luis" );
-        assertThat( author )
-            .isPresent()
-            .get().hasFieldOrPropertyWithValue( "surnames", "Borges" );
+        List<Author> authors = repository.findByName( "Jorge Luis" );
+        assertThat( authors )
+            .hasSizeGreaterThanOrEqualTo( 1 )
+            .anyMatch( a -> a.getSurnames().equals( "Borges" ) );
     }
 
     @Test
-    void givenNameWithSpecialCharacters_whenFindByName_thenAuthorIsReturned(){
+    void givenNameWithSpecialCharacters_whenFindByName_thenAuthorsAreReturned(){
         repository.save(
             Author.builder()
                 .name( "Ramón María" )
                 .surnames( "Del Valle Inclán" )
                 .build()
         );
-        Optional<Author> author = repository.findByName( "Ramón María" );
-        assertThat( author )
-            .isPresent()
-            .get().hasFieldOrPropertyWithValue( "name", "Ramón María" );
+        List<Author> authors = repository.findByName( "Ramón María" );
+        assertThat( authors )
+            .hasSizeGreaterThanOrEqualTo( 1 )
+            .anyMatch( a -> a.getName().equals( "Ramón María" ) );
     }
 
 
@@ -57,10 +57,10 @@ class AuthorsRepositoryTest {
                 .surnames( "Borges" )
                 .build()
         );
-        Optional<Author> author = repository.findBySurnames( "Borges" );
-        assertThat( author )
-            .isPresent()
-            .get().hasFieldOrPropertyWithValue( "name", "Jorge Luis" );
+        List<Author> authors = repository.findBySurnames( "Borges" );
+        assertThat( authors )
+            .hasSizeGreaterThanOrEqualTo( 1 )
+            .anyMatch( a -> a.getName().equals( "Jorge Luis" ) );
     }
 
     @Test
@@ -71,10 +71,29 @@ class AuthorsRepositoryTest {
                 .surnames( "Del Valle Inclán" )
                 .build()
         );
-        Optional<Author> author = repository.findBySurnamesContainingIgnoreCase( "VALLE" );
+        List<Author> authors = repository.findBySurnamesContainingIgnoreCase( "VALLE" );
+        assertThat( authors )
+            .hasSizeGreaterThanOrEqualTo( 1 )
+            .anyMatch( a -> a.getSurnames().equals( "Del Valle Inclán" ) );
+    }
+
+    @Test
+    void givenNameAndSurnamesInUppercase_whenFindByNameAndSurnames_thenAuthorIsReturned(){
+        repository.save(
+            Author.builder()
+                .name( "Ramón María" )
+                .surnames( "Del Valle Inclán" )
+                .build()
+        );
+        Optional<Author> author = repository
+            .findByNameContainingIgnoreCaseAndSurnamesContainingIgnoreCase(
+                "RAMÓN", "INCLÁN"
+            );
         assertThat( author )
             .isPresent()
-            .get().hasFieldOrPropertyWithValue( "surnames", "Del Valle Inclán" );
+            .get()
+                .hasFieldOrPropertyWithValue( "name", "Ramón María" )
+                .hasFieldOrPropertyWithValue( "surnames", "Del Valle Inclán" );
     }
 
     @Test

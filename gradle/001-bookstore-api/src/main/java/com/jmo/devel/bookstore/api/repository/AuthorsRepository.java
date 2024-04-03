@@ -11,9 +11,10 @@ import java.util.Optional;
 @Repository
 public interface AuthorsRepository extends CrudRepository<Author, Long> {
 
-    Optional<Author> findByName( String name );
-    Optional<Author> findBySurnames( String surnames );
-    Optional<Author> findBySurnamesContainingIgnoreCase( String surname );
+    List<Author> findByName( String name );
+    List<Author> findBySurnames( String surnames );
+    List<Author> findBySurnamesContainingIgnoreCase( String surname );
+    Optional<Author> findByNameContainingIgnoreCaseAndSurnamesContainingIgnoreCase( String name, String surnames );
     List<Author> findByDeathIsNull();
     List<Author> findByBirthDateAfter( LocalDate date );
 
