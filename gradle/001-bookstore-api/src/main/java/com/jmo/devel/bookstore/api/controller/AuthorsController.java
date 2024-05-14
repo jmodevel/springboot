@@ -32,11 +32,16 @@ public class AuthorsController {
         this.modelAssembler = modelAssembler;
     }
 
-    @PostMapping( produces = "application/hal+json" )
+    @PostMapping
     public ResponseEntity<EntityModel<AuthorDto>> create(
         @RequestBody AuthorDto author
     ) {
         return ok( this.service.create(this.modelMapper.fromDto(author)) );
+    }
+
+    @GetMapping( { "" } )
+    public ResponseEntity<CollectionModel<EntityModel<AuthorDto>>> getAll(){
+        return ok( this.service.getAll() );
     }
 
     @GetMapping( "/{id}" )

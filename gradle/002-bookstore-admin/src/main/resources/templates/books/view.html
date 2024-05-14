@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Books View</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h2>Authors</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+                <h3>View <span th:text="${book.title}"/></h3>
+                <div class="card-body">
+                    <form th:action="@{/books}" th:object="${book}" th:method="GET">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" name="title" th:field="*{title}" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label>ISBN</label>
+                            <input type="text" name="isbn" th:field="*{isbn}" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label>Pages</label>
+                            <input type="text" name="pages" th:field="*{pages}" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label>Published</label>
+                            <input type="date" name="published" th:field="*{published}" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label>Publisher</label>
+                            <div class="input-group">
+                                <input type="text" name="publisher" th:value="${book.publisher.name}" class="form-control" readonly />
+                                <div class="input-group-append">
+                                    <a th:href="@{/publishers/{id}(id=${book.publisher.id})}">
+                                        <button type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Author</label>
+                            <div class="input-group">
+                                <input type="text" name="author" th:value="|${book.author.name} ${book.author.surnames}|" class="form-control" readonly />
+                                <div class="input-group-append">
+                                    <a th:href="@{/authors/{id}(id=${book.author.id})}">
+                                        <button type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">Back</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

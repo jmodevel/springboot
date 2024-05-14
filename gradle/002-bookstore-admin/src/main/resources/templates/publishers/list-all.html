@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Publishers List</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h2>Publishers</h2>
+    <div class="container">
+        <div class="row">
+            <table th:unless="${#lists.isEmpty(publishers)}" class="table table-responsive">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Headquarters</th>
+                    <th>Website</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p:${publishers}" >
+                    <td th:text="${p.name}"></td>
+                    <td th:text="${p.headquarters}"></td>
+                    <td th:text="${p.website}"></td>
+                    <td style="display:flex">
+                        <a th:href="@{/publishers/{id}(id=${p.id})}">
+                            <button type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
+                        </a>
+                        <a th:href="@{/publishers/{id}/edit(id=${p.id})}">
+                            <button type="button" class="btn btn-success"><i class="fas fa-edit"></i></button>
+                        </a>
+                        <form th:action="@{'/publishers/{id}'(id=${p.id})}" th:method="POST" >
+                            <input type="hidden" name="_method" value="DELETE" />
+                            <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <span th:if="${#lists.isEmpty(publishers)}" class="alert alert-info">No publishers</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

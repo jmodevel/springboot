@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Authors Edit</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h2>Authors</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+                <h3>Edit <span th:text="${id}"/></h3>
+                <div class="card-body">
+                    <form th:action="@{/authors/{id}(id=${id})}" th:object="${author}" th:method="POST">
+                        <input type="hidden" name="_method" value="PUT" />
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" th:field="*{name}" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Surnames</label>
+                            <input type="text" th:field="*{surnames}" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Birth Date</label>
+                            <input type="date" th:field="*{birthDate}" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Death</label>
+                            <input type="date" th:field="*{death}" class="form-control" />
+                        </div>
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

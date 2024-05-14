@@ -35,6 +35,11 @@ public class BooksController {
         return ok( this.service.create( this.modelMapper.fromDto( book ) ) );
     }
 
+    @GetMapping( { "/", "" } )
+    public ResponseEntity<CollectionModel<EntityModel<BookDto>>> getAll(){
+        return ok( this.service.getAll() );
+    }
+
     @GetMapping( "/{id}" )
     public ResponseEntity<EntityModel<BookDto>> getById( @PathVariable( "id" ) Long id ){
         return ok( this.service.getById( id ) );

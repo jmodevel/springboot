@@ -1,6 +1,7 @@
 package com.jmo.devel.bookstore.api.repository;
 
 import com.jmo.devel.bookstore.api.model.Author;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,8 @@ import java.util.Optional;
 @Repository
 public interface AuthorsRepository extends CrudRepository<Author, Long> {
 
+    @Query( "select a from Author a")
+    List<Author> findAll();
     List<Author> findByName( String name );
     List<Author> findBySurnames( String surnames );
     List<Author> findBySurnamesContainingIgnoreCase( String surname );

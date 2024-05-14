@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Authors Search</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h2>Authors Search</h2>
+    <div>
+        <form id="searchForm">
+            <div class="row">
+                <div class="form-group col">
+                    <label for="headquartersInput">Headquarters</label>
+                    <select id="headquartersInput" name="headquarters" class="form-select" multiple>
+                        <option value="1">Madrid</option>
+                        <option value="2">Barcelona</option>
+                        <option value="3">Valencia</option>
+                        <option value="4">Bilbao</option>
+                        <option value="5">Zaragoza</option>
+                        <option value="6">Sevilla</option>
+                        <option value="7">Málaga</option>
+                        <option value="8">Murcia</option>
+                    </select>
+                    <button class="btn btn-primary" name="criteria" value="headquarters" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+        <div id="searchResults">
+            <!-- Search results will be displayed here -->
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            $(document).ready(function() {
+                $('#searchForm').submit(function(event) {
+                    event.preventDefault();
+                    var action = $(document.activeElement).val();
+                    var query  = '';
+                    if( action == 'headquarters' ){
+                      var selectedOptions = $('#headquartersInput option:selected');
+                      var selectedOptionTexts = [];
+                      selectedOptions.each(function() {
+                        selectedOptionTexts.push($(this).text());
+                      });
+                      query = selectedOptionTexts.join(',');
+                    }
+                    search( action, query );
+                });
+
+                function search( action, query ) {
+                    $.ajax({
+                        url: [[@{/search/publishers}]],
+                        type: 'GET',
+                        data: { action: action, query: query },
+                        success: function(data) {
+                            $('#searchResults').html(data);
+                        },
+                        error: function() {
+                            $('#searchResults').html(
+                              '<div class="pt-2"><div class="alert alert-info">No publishers</div></div>'
+                            );
+                        }
+                    });
+                }
+            });
+            /*]]>*/
+        </script>
+    </div>
+</div>
+</body>
+</html>

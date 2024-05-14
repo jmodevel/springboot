@@ -1,0 +1,33 @@
+<div th:fragment="searchResults" xmlns:th="http://www.w3.org/1999/xhtml">
+    <table th:unless="${#lists.isEmpty(books)}" class="table table-responsive">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>ISBN</th>
+            <th>Pages</th>
+            <th>Published</th>
+            <th>Publisher</th>
+            <th>Author</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="b:${books}" >
+            <td th:text="${b.title}"></td>
+            <td th:text="${b.isbn}"></td>
+            <td th:text="${b.pages}"></td>
+            <td th:text="${#temporals.format(b.published, 'yyyy/MM/dd')}"></td>
+            <td th:text="${b.publisher?.name}"></td>
+            <td th:text="|${b.author?.name} ${b.author?.surnames}|"></td>
+            <td style="display:flex">
+                <a th:href="@{/books/{id}(id=${b.id})}">
+                    <button type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="pt-2">
+        <div th:if="${#lists.isEmpty(books)}" class="alert alert-info">No books</div>
+    </div>
+</div>

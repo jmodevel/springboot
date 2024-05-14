@@ -19,6 +19,14 @@ public class PublishersService {
         this.publishersRepository = publishersRepository;
     }
 
+    public List<Publisher> getAll(){
+        List<Publisher> publishers = this.publishersRepository.findAll();
+        if ( !publishers.isEmpty() ){
+            return publishers;
+        }
+        throw new NoResultsException( "publishers", "all" );
+    }
+
     public Publisher getById(Long id ){
         return this.publishersRepository.findById( id )
             .orElseThrow( () -> new PublisherNotFoundException( "id", String.valueOf( id ) ) );

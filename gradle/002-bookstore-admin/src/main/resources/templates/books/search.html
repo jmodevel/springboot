@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Books Search</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h2>Books Search</h2>
+    <div>
+        <form id="searchForm">
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="titleInput">Title</label>
+                    <input class="form-control" type="text" id="titleInput" name="titleInput" placeholder="Enter title" value="">
+                    <button class="btn btn-primary" name="criteria" value="title" type="submit">Search</button>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="yearInput">Year</label>
+                    <input class="form-control" type="number" id="yearInput" name="yearInput" placeholder="Enter year" value="" min="1400">
+                    <button class="btn btn-primary" name="criteria" value="year" type="submit">Search</button>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="publisherInput">Publisher</label>
+                    <select id="publisherInput" name="publisherInput" class="form-select">
+                        <option th:each="publisher : ${publishers}" th:value="${publisher.name}" th:text="${publisher.name}"></option>
+                    </select>
+                    <button class="btn btn-primary" name="criteria" value="publisher" type="submit">Search</button>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <label class="col-sm-1">Pages</label>
+                <div class="col-sm-3">
+                    <input class="form-control" type="number" id="minPagesInput" name="minPagesInput" placeholder="Enter min" value="" min="1">
+                    <input class="form-control" type="number" id="maxPagesInput" name="maxPagesInput" placeholder="Enter max" value="" min="1">
+                </div>
+                <button class="btn btn-primary col-sm-2 h-50" name="criteria" value="pages" type="submit">Search</button>
+                <label class="col-sm-1">Author</label>
+                <div class="col-sm-3">
+                    <input class="form-control" type="text" id="nameInput" name="nameInput" placeholder="Enter name" value="">
+                    <input class="form-control" type="text" id="surnamesInput" name="surnamesInput" placeholder="Enter surnames" value="">
+                </div>
+                <button class="btn btn-primary col-sm-2 h-50" name="criteria" value="author" type="submit">Search</button>
+            </div>
+        </form>
+        <div id="searchResults">
+            <!-- Search results will be displayed here -->
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            $(document).ready(function() {
+                $('#searchForm').submit(function(event) {
+                    event.preventDefault();
+                    var action = $(document.activeElement).val();
+                    var criteria1 = '';
+                    var criteria2 = '';
+                    if( action == 'title' ){
+                     criteria1 = $('#titleInput').val();
+                    } else if( action == 'year' ){
+                     criteria1 = $('#yearInput').val();
+                    } else if( action == 'publisher' ){
+                     criteria1 = $('#publisherInput').val();
+                    } else if( action == 'pages' ){
+                     criteria1 = $('#minPagesInput').val();
+                     criteria2 = $('#maxPagesInput').val();
+                    } else if( action == 'author' ){
+                     criteria1 = $('#nameInput').val();
+                     criteria2 = $('#surnamesInput').val();
+                    }
+                    search( action, criteria1, criteria2 );
+                });
+
+                function search( action, criteria1, criteria2 ) {
+                    $.ajax({
+                        url: [[@{/search/books}]],
+                        type: 'GET',
+                        data: { action: action, criteria1: criteria1, criteria2: criteria2 },
+                        success: function(data) {
+                            $('#searchResults').html(data);
+                        },
+                        error: function() {
+                            $('#searchResults').html(
+                              '<div class="pt-2"><div class="alert alert-info">No books</div></div>'
+                            );
+                        }
+                    });
+                }
+            });
+            /*]]>*/
+        </script>
+    </div>
+</div>
+</body>
+</html>

@@ -21,6 +21,14 @@ public class AuthorsService {
         this.authorsRepository = authorsRepository;
     }
 
+    public List<Author> getAll(){
+        List<Author> authors = this.authorsRepository.findAll();
+        if ( !authors.isEmpty() ){
+            return authors;
+        }
+        throw new NoResultsException( "authors", "all" );
+    }
+
     public Author getById( Long id ){
         return this.authorsRepository.findById( id )
             .orElseThrow( () -> new AuthorNotFoundException( "id", String.valueOf(id) ) );

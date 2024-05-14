@@ -6,7 +6,9 @@ import com.jmo.devel.bookstore.api.exception.NoResultsException;
 import com.jmo.devel.bookstore.api.model.Author;
 import com.jmo.devel.bookstore.api.model.Book;
 import com.jmo.devel.bookstore.api.model.Publisher;
+import com.jmo.devel.bookstore.api.repository.AuthorsRepository;
 import com.jmo.devel.bookstore.api.repository.BooksRepository;
+import com.jmo.devel.bookstore.api.repository.PublishersRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,12 @@ class BooksServiceTest {
 
     @MockBean
     private BooksRepository repository;
+
+    @MockBean
+    private AuthorsRepository authorsRepository;
+
+    @MockBean
+    private PublishersRepository publishersRepository;
 
     @Test
     void givenAnExistingBook_whenGetById_thenBookIsReturned(){

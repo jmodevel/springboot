@@ -1,10 +1,10 @@
 package com.jmo.devel.bookstore.api.service;
 
-import com.jmo.devel.bookstore.api.exception.BookNotFoundException;
-import com.jmo.devel.bookstore.api.exception.ExistingBookException;
-import com.jmo.devel.bookstore.api.exception.NoResultsException;
+import com.jmo.devel.bookstore.api.exception.*;
 import com.jmo.devel.bookstore.api.model.Book;
+import com.jmo.devel.bookstore.api.repository.AuthorsRepository;
 import com.jmo.devel.bookstore.api.repository.BooksRepository;
+import com.jmo.devel.bookstore.api.repository.PublishersRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,10 +13,26 @@ import java.util.Optional;
 @Service
 public class BooksService {
 
-    private final BooksRepository booksRepository;
+    private final BooksRepository      booksRepository;
+    private final AuthorsRepository    authorsRepository;
+    private final PublishersRepository publishersRepository;
 
-    public BooksService( BooksRepository booksRepository ){
-        this.booksRepository = booksRepository;
+    public BooksService(
+        BooksRepository      booksRepository,
+        AuthorsRepository    authorsRepository,
+        PublishersRepository publishersRepository
+    ){
+        this.booksRepository      = booksRepository;
+        this.authorsRepository    = authorsRepository;
+        this.publishersRepository = publishersRepository;
+    }
+
+    public List<Book> getAll(){
+        List<Book> books = this.booksRepository.findAll();
+        if ( !books.isEmpty() ){
+            return books;
+        }
+        throw new NoResultsException( "books", "all" );
     }
 
     public Book getById( Long id ){
@@ -84,6 +100,22 @@ public class BooksService {
         Optional<Book> existing = booksRepository.findByIsbn( book.getIsbn() );
         if( existing.isPresent() ){
             throw new ExistingBookException( book.getIsbn() );
+        }
+        if( book.getPublisher() != null ){
+            book.setPublisher(
+                this.publishersRepository.findById( book.getPublisher().getId() )
+                    .orElseThrow( () ->
+                        new PublisherNotFoundException( "id", String.valueOf( book.getPublisher().getId() ) )
+                    )
+            );
+        }
+        if( book.getAuthor() != null ){
+            book.setAuthor(
+                this.authorsRepository.findById( book.getAuthor().getId() )
+                    .orElseThrow( () ->
+                        new AuthorNotFoundException( "id", String.valueOf( book.getAuthor().getId() ) )
+                    )
+            );
         }
         return booksRepository.save( book );
     }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Authors List</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h2>Authors</h2>
+    <div class="container">
+        <div class="row">
+            <table th:unless="${#lists.isEmpty(authors)}" class="table table-responsive">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Surnames</th>
+                    <th>Birth date</th>
+                    <th>Death</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="a:${authors}" >
+                    <td th:text="${a.name}"></td>
+                    <td th:text="${a.surnames}"></td>
+                    <td th:text="${#temporals.format(a.birthDate, 'yyyy/MM/dd')}"></td>
+                    <td th:text="${ a.death!=null ? #temporals.format(a.death, 'yyyy/MM/dd'): '' }"></td>
+                    <td style="display:flex">
+                        <a th:href="@{/authors/{id}(id=${a.id})}">
+                            <button type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
+                        </a>
+                        <a th:href="@{/authors/{id}/edit(id=${a.id})}">
+                            <button type="button" class="btn btn-success"><i class="fas fa-edit"></i></button>
+                        </a>
+                        <form th:action="@{'/authors/{id}'(id=${a.id})}" th:method="POST" >
+                            <input type="hidden" name="_method" value="DELETE" />
+                            <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <span th:if="${#lists.isEmpty(authors)}" class="alert alert-info">No authors</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

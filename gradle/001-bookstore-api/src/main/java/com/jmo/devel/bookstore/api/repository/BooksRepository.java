@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface BooksRepository extends CrudRepository<Book, Long> {
 
+    @Query( "select b from Book b")
+    List<Book> findAll();
     Optional<Book> findByTitle( String title );
     List<Book> findByTitleContainingIgnoreCase( String title );
     Optional<Book> findByIsbn( String isbn );

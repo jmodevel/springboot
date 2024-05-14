@@ -35,6 +35,11 @@ public class PublishersController {
         return ok( this.service.create( this.modelMapper.fromDto( publisher ) ) );
     }
 
+    @GetMapping( { "/", "" } )
+    public ResponseEntity<CollectionModel<EntityModel<PublisherDto>>> getAll(){
+        return ok( this.service.getAll() );
+    }
+
     @GetMapping( "/{id}" )
     public ResponseEntity<EntityModel<PublisherDto>> getById( @PathVariable( "id" ) Long id ){
         return ok( this.service.getById( id ) );

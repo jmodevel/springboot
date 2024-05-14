@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Authors View</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h2>Authors</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+                <h3>View <span th:text="|${author.name} ${author.surnames}|"/></h3>
+                <div class="card-body">
+                    <form th:action="@{/authors}" th:object="${author}" th:method="GET">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" th:field="*{name}" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label>Surnames</label>
+                            <input type="text" th:field="*{surnames}" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label>Birth Date</label>
+                            <input type="date" th:field="*{birthDate}" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label>Death</label>
+                            <input type="date" th:field="*{death}" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label>Books</label>
+                            <table class="table table-sm">
+                                <tr class="table-secondary">
+                                    <th>ISBN</th>
+                                    <th>Title</th>
+                                    <th></th>
+                                </tr>
+                                <tr th:each="book : ${books}">
+                                    <td th:text="${book.isbn}"></td>
+                                    <td th:text="${book.title}"></td>
+                                    <td>
+                                        <a th:href="@{/books/{id}(id=${book.id})}">
+                                            <button type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">Back</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

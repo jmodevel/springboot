@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Books Add</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h2>Books</h2>
+    <div class="container">
+        <div class="row">
+            <h4 class="text-center">Add</h4>
+            <div class="col-lg-6 col-md-6 col-sm-6 container card">
+                <div class="card-body">
+                    <form th:action="@{/books}" th:object="${book}" method="POST">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" name="title" th:field="*{title}" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>ISBN</label>
+                            <input type="text" name="isbn" th:field="*{isbn}" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Pages</label>
+                            <input type="text" name="pages" th:field="*{pages}" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Published</label>
+                            <input type="date" name="published" th:field="*{published}" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Publisher</label>
+                            <select class="form-select" th:field="*{publisher.id}">
+                                <option th:each="publisher : ${publishers}" th:value="${publisher.id}" th:text="${publisher.name}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Author</label>
+                            <select class="form-select" th:field="*{author.id}">
+                                <option th:each="author : ${authors}" th:value="${author.id}" th:text="|${author.name} ${author.surnames}|"></option>
+                            </select>
+                        </div>
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface PublishersRepository extends CrudRepository<Publisher, Long> {
 
+    @Query( "select p from Publisher p")
+    List<Publisher> findAll();
     @Query( "select p from Publisher p where p.name = :name")
     Optional<Publisher> findByName( String name );
     @Query( "select p from Publisher p where p.headquarters in :locations")

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Authors Search</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h2>Authors Search</h2>
+    <div>
+        <form id="searchForm">
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="nameInput">Name</label>
+                    <input class="form-control" type="text" id="nameInput" name="nameInput" placeholder="Enter name" value="">
+                    <button class="btn btn-primary" name="criteria" value="name" type="submit">Search</button>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="surnamesInput">Surnames</label>
+                    <input class="form-control" type="text" id="surnamesInput" name="surnamesInput" placeholder="Enter surnames" value="">
+                    <button class="btn btn-primary" name="criteria" value="surnames" type="submit">Search</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="surnamesLikeInput">Surnames %</label>
+                    <input class="form-control" type="text" id="surnamesLikeInput" name="surnamesLikeInput" placeholder="Enter surnames like" value="">
+                    <button class="btn btn-primary" name="criteria" value="surnamesLike" type="submit">Search</button>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="aliveInput">Alive</label>
+                    <input class="form-control" type="text" id="aliveInput" name="bornAfterInput" placeholder="" value="" readonly>
+                    <button class="btn btn-primary" name="criteria" value="alive" type="submit">Search</button>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="bornAfterInput">Born After</label>
+                    <input class="form-control" type="number" id="bornAfterInput" name="bornAfterInput" placeholder="Enter year" value=""  min="1400" max="2020">
+                    <button class="btn btn-primary" name="criteria" value="bornAfter" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+        <div id="searchResults">
+            <!-- Search results will be displayed here -->
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            $(document).ready(function() {
+                $('#searchForm').submit(function(event) {
+                    event.preventDefault();
+                    var action = $(document.activeElement).val();
+                    var query  = '';
+                    if( action == 'name' ){
+                     query = $('#nameInput').val();
+                    } else if( action == 'surnames' ){
+                     query = $('#surnamesInput').val();
+                    } else if( action == 'surnamesLike' ){
+                     query = $('#surnamesLikeInput').val();
+                    } else if( action == 'alive' ){
+                     query = '';
+                    } else if( action == 'bornAfter' ){
+                     query = $('#bornAfterInput').val();
+                    }
+                    search( action, query );
+                });
+
+                function search( action, query ) {
+                    $.ajax({
+                        url: [[@{/search/authors}]],
+                        type: 'GET',
+                        data: { action: action, query: query },
+                        success: function(data) {
+                            $('#searchResults').html(data);
+                        },
+                        error: function() {
+                            $('#searchResults').html(
+                              '<div class="pt-2"><div class="alert alert-info">No authors</div></div>'
+                            );
+                        }
+                    });
+                }
+            });
+            /*]]>*/
+        </script>
+    </div>
+</div>
+</body>
+</html>

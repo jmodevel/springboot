@@ -1,0 +1,28 @@
+<div th:fragment="searchResults" xmlns:th="http://www.w3.org/1999/xhtml">
+    <table th:unless="${#lists.isEmpty(authors)}" class="table table-responsive">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Surnames</th>
+            <th>Birth date</th>
+            <th>Death</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="a:${authors}" >
+            <td th:text="${a.name}"></td>
+            <td th:text="${a.surnames}"></td>
+            <td th:text="${#temporals.format(a.birthDate, 'yyyy/MM/dd')}"></td>
+            <td th:text="${ a.death!=null ? #temporals.format(a.death, 'yyyy/MM/dd'): '' }"></td>
+            <td style="display:flex">
+                <a th:href="@{/authors/{id}(id=${a.id})}">
+                    <button type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="pt-2">
+        <div th:if="${#lists.isEmpty(authors)}" class="alert alert-info">No authors</div>
+    </div>
+</div>

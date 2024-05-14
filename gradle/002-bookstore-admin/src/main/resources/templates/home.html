@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Bookstore Admin</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <div class="container">
+        <div class="jumbotron">
+            <h2 class="display-4">Bookstore Admin</h2>
+            <p class="lead">This is an app whose purpose is to allow searching and manage publishers, authors and books
+            in an online library</p>
+            <hr class="my-4">
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" th:href="@{/books}"      role="button">Books</a>
+                <a class="btn btn-primary btn-lg" th:href="@{/authors}"    role="button">Authors</a>
+                <a class="btn btn-primary btn-lg" th:href="@{/publishers}" role="button">Publishers</a>
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

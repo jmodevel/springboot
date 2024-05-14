@@ -38,18 +38,8 @@ class BooksTest {
 
         String path = "http://localhost:" + port + "/books";
 
-        PublisherDto publisher = PublisherDto.builder()
-            .name( "Blackie Books" )
-            .headquarters( "Barcelona" )
-            .website( "https://blackiebooks.org/" )
-            .build();
-
-        AuthorDto author = AuthorDto.builder()
-            .name( "Miguel" )
-            .surnames( "de Cervantes" )
-            .birthDate( LocalDate.of( 1547, Month.SEPTEMBER, 29 ) )
-            .death( LocalDate.of( 1616, Month.APRIL, 22 ) )
-            .build();
+        PublisherDto publisher = getPublisher();
+        AuthorDto    author    = getAuthor();
 
         BookDto book = BookDto.builder()
             .isbn( "9788419654328" )
@@ -179,6 +169,56 @@ class BooksTest {
             HttpStatusCode.valueOf( HttpStatus.NOT_FOUND.value() )
         );
 
+    }
+
+    private PublisherDto getPublisher(){
+        String path = "http://localhost:" + port + "/publishers";
+        PublisherDto publisher = PublisherDto.builder()
+            .name( "Blackie Books" )
+            .headquarters( "Barcelona" )
+            .website( "https://blackiebooks.org/" )
+            .build();
+        var existingResponse = this.restTemplate.getForEntity(
+            path + "/name/Blackie Books", EntityModel.class
+        );
+        if( existingResponse.getStatusCode().is2xxSuccessful() ){
+            return objectMapper.convertValue(
+                existingResponse.getBody().getContent(), PublisherDto.class
+            );
+        }
+        var createResponse = this.restTemplate.postForEntity(
+            path, publisher, EntityModel.class
+        );
+        EntityModel<PublisherDto> entity = (EntityModel<PublisherDto>) createResponse.getBody();
+        return objectMapper.convertValue(
+            entity.getContent(), PublisherDto.class
+        );
+    }
+
+    private AuthorDto getAuthor(){
+        String path = "http://localhost:" + port + "/authors";
+        AuthorDto author = AuthorDto.builder()
+            .name( "Miguel" )
+            .surnames( "de Cervantes" )
+            .birthDate( LocalDate.of( 1547, Month.SEPTEMBER, 29 ) )
+            .death( LocalDate.of( 1616, Month.APRIL, 22 ) )
+            .build();
+        var existingResponse = this.restTemplate.getForEntity(
+            path + "/?name=Miguel&surnames=de Cervantes", EntityModel.class
+        );
+        if( existingResponse.getStatusCode().is2xxSuccessful() ){
+            return objectMapper.convertValue(
+                existingResponse.getBody().getContent(), AuthorDto.class
+            );
+        }
+
+        var createResponse = this.restTemplate.postForEntity(
+            path, author, EntityModel.class
+        );
+        EntityModel<AuthorDto> entity = (EntityModel<AuthorDto>) createResponse.getBody();
+        return objectMapper.convertValue(
+            entity.getContent(), AuthorDto.class
+        );
     }
 
 }
