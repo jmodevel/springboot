@@ -18,4 +18,7 @@ public interface PublishersRepository extends CrudRepository<Publisher, Long> {
     @Query( "select p from Publisher p where p.headquarters in :locations")
     List<Publisher> findByHeadquartersIn( List<String> locations );
 
+    @Query( "select distinct p.headquarters from Publisher p" )
+    List<String> findCities();
+
 }

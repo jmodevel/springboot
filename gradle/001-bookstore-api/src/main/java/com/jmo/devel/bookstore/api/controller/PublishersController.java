@@ -3,8 +3,11 @@ package com.jmo.devel.bookstore.api.controller;
 import com.jmo.devel.bookstore.api.assembler.PublishersModelAssembler;
 import com.jmo.devel.bookstore.api.dto.PublisherDto;
 import com.jmo.devel.bookstore.api.dto.mapper.PublishersModelMapper;
+import com.jmo.devel.bookstore.api.hateoas.City;
 import com.jmo.devel.bookstore.api.model.Publisher;
 import com.jmo.devel.bookstore.api.service.PublishersService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("publishers")
+@Slf4j
 public class PublishersController {
+
+    @Value("${server.port}")
+    private int port;
 
     private final PublishersService        service;
     private final PublishersModelMapper    modelMapper;
@@ -37,6 +44,7 @@ public class PublishersController {
 
     @GetMapping( { "/", "" } )
     public ResponseEntity<CollectionModel<EntityModel<PublisherDto>>> getAll(){
+        log.info( "Serving all publishers from port: " + port );
         return ok( this.service.getAll() );
     }
 
@@ -55,6 +63,11 @@ public class PublishersController {
         @RequestParam( "headquarters" ) List<String> headquarters
     ){
         return ok( this.service.getByHeadquarters( headquarters ) );
+    }
+
+    @GetMapping( "/cities" )
+    public ResponseEntity<CollectionModel<City>> getCities(){
+        return success( this.service.getCities() );
     }
 
     @PutMapping( "/{id}" )
@@ -86,6 +99,12 @@ public class PublishersController {
             this.modelAssembler.toCollectionModel(
                 publishers.stream().map( modelMapper::toDto ).toList()
             )
+        );
+    }
+
+    private ResponseEntity<CollectionModel<City>> success( List<String> results ){
+        return ResponseEntity.ok(
+            CollectionModel.of( results.stream().map( City::new ).toList() )
         );
     }
 

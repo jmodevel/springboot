@@ -47,6 +47,14 @@ public class PublishersService {
             String.join( ",", headquarters ) );
     }
 
+    public List<String> getCities(){
+        List<String> cities = this.publishersRepository.findCities();
+        if ( !cities.isEmpty() ){
+            return cities;
+        }
+        throw new NoResultsException( "cities", "" );
+    }
+
     public Publisher create( Publisher publisher ){
         Optional<Publisher> existing = publishersRepository
             .findByName( publisher.getName() );
