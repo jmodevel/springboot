@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "publishers", url = "${publishers.service.url}")
+@FeignClient(name = "bookstore-api", contextId = "publishers")
 public interface PublishersSearchClient {
 
-    @GetMapping( "/headquarters" )
+    @GetMapping( "/publishers/headquarters" )
     ResponseEntity<CollectionModel<EntityModel<PublisherDto>>> getByHeadquarters(
         @RequestParam( "headquarters" ) List<String> headquarters
     );

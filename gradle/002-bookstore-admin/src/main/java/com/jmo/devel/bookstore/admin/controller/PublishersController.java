@@ -17,6 +17,7 @@ public class PublishersController {
     public static final String REDIRECT_PUBLISHERS = "redirect:/publishers";
 
     public static final String PUBLISHERS = "publishers";
+    public static final String CITIES     = "cities";
     public static final String PUBLISHER  = "publisher";
     public static final String BOOKS      = "books";
 
@@ -59,7 +60,9 @@ public class PublishersController {
 
     @GetMapping("/search")
     public String showSearchForm( Model model ){
+        List<String> cities = this.service.getCities();
         model.addAttribute( PUBLISHERS, List.of() );
+        model.addAttribute( CITIES,     cities    );
         return "publishers/search";
     }
 

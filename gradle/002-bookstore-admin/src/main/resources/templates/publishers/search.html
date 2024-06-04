@@ -3,25 +3,18 @@
       xmlns:layout="http://www.w3.org/1999/xhtml"
       layout:decorate="~{fragments/layout}">
 <head>
-    <title>Authors Search</title>
+    <title>Publishers Search</title>
 </head>
 <body>
 <div layout:fragment="content" class="container">
-    <h2>Authors Search</h2>
+    <h2>Publishers Search</h2>
     <div>
         <form id="searchForm">
             <div class="row">
                 <div class="form-group col">
                     <label for="headquartersInput">Headquarters</label>
                     <select id="headquartersInput" name="headquarters" class="form-select" multiple>
-                        <option value="1">Madrid</option>
-                        <option value="2">Barcelona</option>
-                        <option value="3">Valencia</option>
-                        <option value="4">Bilbao</option>
-                        <option value="5">Zaragoza</option>
-                        <option value="6">Sevilla</option>
-                        <option value="7">Málaga</option>
-                        <option value="8">Murcia</option>
+                        <option th:each="c : ${cities}" th:value="${c}" th:text="${c}"></option>
                     </select>
                     <button class="btn btn-primary" name="criteria" value="headquarters" type="submit">Search</button>
                 </div>

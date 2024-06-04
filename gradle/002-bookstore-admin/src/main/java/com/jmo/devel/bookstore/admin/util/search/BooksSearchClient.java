@@ -10,31 +10,31 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "books", url = "${books.service.url}")
+@FeignClient(name = "bookstore-api", contextId = "books")
 public interface BooksSearchClient {
 
-    @GetMapping( "/title-like/{title}" )
+    @GetMapping( "/books/title-like/{title}" )
     ResponseEntity<CollectionModel<EntityModel<BookDto>>> getByTitleLike(
         @PathVariable( "title" ) String title
     );
 
-    @GetMapping( "/pages" )
+    @GetMapping( "/books/pages" )
     ResponseEntity<CollectionModel<EntityModel<BookDto>>> getByPages(
         @RequestParam( "min" ) int min,
         @RequestParam( "max" ) int max
     );
 
-    @GetMapping( "/year/{year}" )
+    @GetMapping( "/books/year/{year}" )
     ResponseEntity<CollectionModel<EntityModel<BookDto>>> getByYear(
         @PathVariable("year") int year
     );
 
-    @GetMapping( "/publisher/{publisher}" )
+    @GetMapping( "/books/publisher/{publisher}" )
     ResponseEntity<CollectionModel<EntityModel<BookDto>>> getByPublisher(
         @PathVariable("publisher") String publisher
     );
 
-    @GetMapping( "/author" )
+    @GetMapping( "/books/author" )
     ResponseEntity<CollectionModel<EntityModel<BookDto>>> getByAuthor(
         @RequestParam( "name"     ) String name,
         @RequestParam( "surnames" ) String surnames
