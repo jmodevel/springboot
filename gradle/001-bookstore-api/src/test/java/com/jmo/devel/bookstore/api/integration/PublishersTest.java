@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jmo.devel.bookstore.api.dto.PublisherDto;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +16,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import redis.embedded.RedisServer;
 
 import java.util.Collection;
 
@@ -29,6 +32,22 @@ class PublishersTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private static RedisServer server;
+
+    @BeforeAll
+    public static void setUp() {
+        server = new RedisServer(6379);
+        server.start();
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        if (server != null) {
+            server.stop();
+        }
+    }
 
     @Test
     void givenPublisher_whenItIsCreatedReadUpdatedAndDeleted_thenItIsDeleted(){
@@ -105,8 +124,12 @@ class PublishersTest {
 
         this.restTemplate.delete( path + "/" + created.getId() );
 
-        var afterDeleteResponse = this.restTemplate.getForEntity(
+        // cache applies for this method
+        /*var afterDeleteResponse = this.restTemplate.getForEntity(
             path + "/" + created.getId(), EntityModel.class
+        );*/
+        var afterDeleteResponse = this.restTemplate.getForEntity(
+            path + "/name/BlacKieBooKs", EntityModel.class
         );
         Assertions.assertThat( afterDeleteResponse.getStatusCode() ).isEqualTo(
             HttpStatusCode.valueOf( HttpStatus.NOT_FOUND.value() )

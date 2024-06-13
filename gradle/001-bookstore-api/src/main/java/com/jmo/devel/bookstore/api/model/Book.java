@@ -3,6 +3,7 @@ package com.jmo.devel.bookstore.api.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Builder
-public class Book {
+public class Book implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,10 +1,12 @@
 package com.jmo.devel.bookstore.api.service;
 
+import com.jmo.devel.bookstore.api.configuration.CacheConfiguration;
 import com.jmo.devel.bookstore.api.exception.AuthorNotFoundException;
 import com.jmo.devel.bookstore.api.exception.ExistingAuthorException;
 import com.jmo.devel.bookstore.api.exception.NoResultsException;
 import com.jmo.devel.bookstore.api.model.Author;
 import com.jmo.devel.bookstore.api.repository.AuthorsRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,6 +31,7 @@ public class AuthorsService {
         throw new NoResultsException( "authors", "all" );
     }
 
+    @Cacheable(value = CacheConfiguration.AUTHORS_CACHE, key = "#id")
     public Author getById( Long id ){
         return this.authorsRepository.findById( id )
             .orElseThrow( () -> new AuthorNotFoundException( "id", String.valueOf(id) ) );

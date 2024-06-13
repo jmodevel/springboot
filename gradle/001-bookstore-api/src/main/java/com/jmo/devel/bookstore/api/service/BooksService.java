@@ -1,10 +1,12 @@
 package com.jmo.devel.bookstore.api.service;
 
+import com.jmo.devel.bookstore.api.configuration.CacheConfiguration;
 import com.jmo.devel.bookstore.api.exception.*;
 import com.jmo.devel.bookstore.api.model.Book;
 import com.jmo.devel.bookstore.api.repository.AuthorsRepository;
 import com.jmo.devel.bookstore.api.repository.BooksRepository;
 import com.jmo.devel.bookstore.api.repository.PublishersRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +37,7 @@ public class BooksService {
         throw new NoResultsException( "books", "all" );
     }
 
+    @Cacheable(value = CacheConfiguration.BOOKS_CACHE, key = "#id")
     public Book getById( Long id ){
         return this.booksRepository.findById( id )
             .orElseThrow( () -> new BookNotFoundException( "id", String.valueOf( id ) ) );
