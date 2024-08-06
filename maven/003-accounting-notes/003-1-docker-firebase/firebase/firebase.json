@@ -1,0 +1,44 @@
+{
+  "emulators": {
+    "ui": {
+      "enabled": true,
+      "port": "4000"
+    },
+    "hub": {
+      "enabled": true,
+      "port": "4400"
+    },
+    "logging": {
+      "enabled": true,
+      "port": "4600"
+    },
+    "functions": {
+      "enabled": true,
+      "port": "5001"
+    },
+    "firestore": {
+      "enabled": true,
+      "port": "9080"
+    },
+    "pubsub": {
+      "enabled": true,
+      "port": "8085"
+    },
+    "database": {
+      "enabled": true,
+      "port": "9010"
+    },
+    "auth": {
+      "enabled": true,
+      "port": "9099"
+    },
+    "Storage": {
+      "enabled": true,
+      "port": "9199"
+    },
+    "Hosting": {
+      "enabled": true,
+      "port": "6000"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: 003-3-accounting-notes-api
+  cloud:
+    gcp:
+      project-id: accounting-notes
+      pubsub:
+        emulator-host: localhost:8085
+      firestore:
+        emulator:
+          enabled: true
+        host-port: localhost:9080
+        project-id: accounting-notes
