@@ -1,5 +1,9 @@
+build:
+  version: "3.0"
+
 server:
   port: 8082
+
 spring:
   application:
     name: 005-2-cards
@@ -19,3 +23,14 @@ spring:
   sql:
     init:
       mode: never
+  profiles:
+    active: qa
+
+cards:
+  message: "Welcome to JMO Devel Default Accounts microservice"
+  contact-details:
+    name: "JMO Devel"
+    email: "jmo.devel@gmail.com"
+  on-call-support:
+    - (555) 555-1234
+    - (555) 555-5678
