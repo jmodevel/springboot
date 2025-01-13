@@ -1,12 +1,18 @@
-build:
-  version: "3.0"
-
 server:
   port: 8080
 
 spring:
   application:
-    name: 005-1-accounts
+    name: accounts
+  profiles:
+    active: prod
+  config:
+    import: optional:configserver:http://localhost:8071
+  rabbitmq:
+    host: "localhost"
+    port: 5672
+    username: "guest"
+    password: "guest"
   datasource:
     url: jdbc:h2:file:/tmp/bank;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
@@ -23,14 +29,11 @@ spring:
   sql:
     init:
       mode: never
-  profiles:
-    active: qa
 
-accounts:
-  message: "Welcome to JMO Devel Default Accounts microservice"
-  contact-details:
-    name: "JMO Devel"
-    email: "jmo.devel@gmail.com"
-  on-call-support:
-    - (555) 555-1234
-    - (555) 555-5678
+# allows to invoke /actuator/refresh to refresh config
+# allows to invoke /actuator/busrefresh to refresh config
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

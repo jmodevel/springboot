@@ -1,0 +1,27 @@
+services:
+
+  network-deploy-service:
+    networks:
+      - bank-network
+
+  microservice-base-config: # different config due to rabbitmq
+    extends:
+      service: network-deploy-service
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    environment:
+      # rabbit service name in docker-compose. if not ms will not find it (with localhost)
+      # 500 errors will happen as configserver (b.e) status is UP (readiness-rabbitmq is optional) but DOWN (not healthy)
+      SPRING_RABBITMQ_HOST: "rabbit"
+
+  microservice-configserver-config:
+    extends:
+      service: microservice-base-config
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"

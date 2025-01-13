@@ -1,17 +1,11 @@
+build:
+  version: "3.0"
+
 server:
   port: 8081
 spring:
   application:
     name: loans
-  profiles:
-    active: prod
-  config:
-    import: optional:configserver:http://localhost:8071
-  rabbitmq:
-    host: "localhost"
-    port: 5672
-    username: "guest"
-    password: "guest"
   datasource:
     url: jdbc:h2:file:/tmp/bank;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
@@ -29,9 +23,11 @@ spring:
     init:
       mode: never
 
-# allows to invoke /actuator/refresh to refresh config
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+loans:
+  message: "Welcome to JMO Devel Default Loans microservice"
+  contact-details:
+    name: "JMO Devel"
+    email: "jmo.devel@gmail.com"
+  on-call-support:
+    - (555) 555-1234
+    - (555) 555-5678
