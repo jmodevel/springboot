@@ -1,0 +1,100 @@
+services:
+
+  accounts:
+    image: "jmodevel/accounts:horseradish"
+    container_name: accounts-ms
+    ports:
+      - "8080:8080"
+    #depends_on:
+    #  configserver:
+    #    condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "accounts"
+      # it should match with the one in application.yml
+      SPRING_DATASOURCE_URL: "jdbc:mysql://accountsdb:3306/accountsdb"
+    depends_on:
+      accountsdb:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+  loans:
+    image: "jmodevel/loans:iceplant"
+    container_name: loans-ms
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_APPLICATION_NAME: "loans"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://loansdb:3306/loansdb"
+    depends_on:
+      loansdb:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+  cards:
+    image: "jmodevel/cards:jackfruit"
+    container_name: cards-ms
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_APPLICATION_NAME: "cards"
+      # inside same network, no need to expose port
+      SPRING_DATASOURCE_URL: "jdbc:mysql://cardsdb:3306/cardsdb"
+    depends_on:
+      cardsdb:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+  configserver:
+    image: "jmodevel/config-server:kale"
+    container_name: config-server-ms
+    ports:
+      - "8071:8071"
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s # repeat in case of long startup time
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
+  accountsdb:
+    container_name: accounts-db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "accountsdb"
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  loansdb:
+    container_name: loans-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: "loansdb"
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  cardsdb:
+    container_name: cards-db
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: "cardsdb"
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+networks:
+  bank-network:
+    driver: "bridge"

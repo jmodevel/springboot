@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: accounts
+  profiles:
+    active: prod
+  config:
+    import: optional:configserver:http://localhost:8071
+  datasource:
+    url: jdbc:mysql://localhost:3306/accountsdb
+    username: root
+    password: root
+  jpa:
+    show-sql: true
+  sql:
+    init:
+      mode: always # execute schema.sql
+
+# allows to invoke /actuator/refresh to refresh config
+# allows to invoke /actuator/busrefresh to refresh config
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
