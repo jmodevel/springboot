@@ -1,0 +1,88 @@
+services:
+
+  accounts:
+    image: "jmodevel/accounts:lettuce"
+    container_name: accounts-ms
+    ports:
+      - "8080:8080"
+    #depends_on:
+    #  configserver:
+    #    condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "accounts"                           # it should match with the one in application.yml
+    extends:
+      file: common-config.yml
+      service: microservice-eurekaserver-config
+
+  loans:
+    image: "jmodevel/loans:mushroom"
+    container_name: loans-ms
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_APPLICATION_NAME: "loans"
+    extends:
+      file: common-config.yml
+      service: microservice-eurekaserver-config
+
+  # two loans ms to check load balancing
+  loans1: # the name must be different
+    image: "jmodevel/loans:mushroom"
+    container_name: loans-ms1 # the name must be different
+    ports:
+      - "8083:8081"
+    environment:
+      SPRING_APPLICATION_NAME: "loans"
+    extends:
+      file: common-config.yml
+      service: microservice-eurekaserver-config
+
+  cards:
+    image: "jmodevel/cards:neeps"
+    container_name: cards-ms
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_APPLICATION_NAME: "cards"
+    extends:
+      file: common-config.yml
+      service: microservice-eurekaserver-config
+
+  configserver:
+    image: "jmodevel/config-server:onion"
+    container_name: config-server-ms
+    ports:
+      - "8071:8071"
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s # repeat in case of long startup time
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
+  eurekaserver:
+    image: "jmodevel/eureka-server:pea"
+    container_name: eureka-server-ms
+    ports:
+      - "8070:8070"
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s # repeat in case of long startup time
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: "eureka-server"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    depends_on:
+      configserver:
+        condition: service_healthy
+
+networks:
+  bank-network:
+    driver: "bridge"
