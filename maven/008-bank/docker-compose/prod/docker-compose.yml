@@ -1,0 +1,112 @@
+services:
+
+  accounts:
+    image: "jmodevel/accounts:quinoa"
+    container_name: accounts-ms
+    ports:
+      - "8080:8080"
+    #depends_on:
+    #  configserver:
+    #    condition: service_healthy
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s # repeat in case of long startup time
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: "accounts"                           # it should match with the one in application.yml
+    extends:
+      file: common-config.yml
+      service: microservice-eurekaserver-config
+
+  loans:
+    image: "jmodevel/loans:radish"
+    container_name: loans-ms
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s # repeat in case of long startup time
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: "loans"
+    extends:
+      file: common-config.yml
+      service: microservice-eurekaserver-config
+
+  cards:
+    image: "jmodevel/cards:samphire"
+    container_name: cards-ms
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: "curl --fail --silent localhost:8082/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s # repeat in case of long startup time
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: "cards"
+    extends:
+      file: common-config.yml
+      service: microservice-eurekaserver-config
+
+  configserver:
+    image: "jmodevel/config-server:tomato"
+    container_name: config-server-ms
+    ports:
+      - "8071:8071"
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s # repeat in case of long startup time
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
+  eurekaserver:
+    image: "jmodevel/eureka-server:ube"
+    container_name: eureka-server-ms
+    ports:
+      - "8070:8070"
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s # repeat in case of long startup time
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: "eureka-server"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    depends_on:
+      configserver:
+        condition: service_healthy
+
+  gatewayserver:
+    image: "jmodevel/gateway-server:verdolaga"
+    container_name: gateway-server-ms
+    ports:
+      - "8072:8072"
+    depends_on:
+      accounts:
+        condition: service_healthy
+      loans:
+        condition: service_healthy
+      cards:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "gateway-server"
+    extends:
+      file: common-config.yml
+      service: microservice-eurekaserver-config
+
+networks:
+  bank-network:
+    driver: "bridge"

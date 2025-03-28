@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: gateway-server
+  config:
+    import: optional:configserver:http://localhost:8071
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          # connect with Eureka Server and locate details about MS
+          #   and forward traffic from external clients to MS
+          # false: do not allow /accounts/ requests to be handled by gateway
+          #   only the ones defined by RouteLocator
+          # true: /accounts/api/fetch will work without any other config
+          enabled: false
+          # accept service with service only in lower case
+          lowerCaseServiceId: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      access: unrestricted
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: gateway-server
+    description: JMO Devel Gateway Server
+    version: 3.0.1-SNAPSHOT
+
+logging:
+  level:
+    com:
+      jmo:
+        devel:
+          gateway: DEBUG

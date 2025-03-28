@@ -1,0 +1,63 @@
+package com.jmo.devel.accounts.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Schema(
+    name = "Loan",
+    description = "Schema to hold loan information"
+)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class LoanDto {
+
+    @NotEmpty(message = "mobile number can not be a null or empty")
+    @Pattern(regexp="(^$|[0-9]{9})",message = "mobile number must be 10 digits")
+    @Schema(
+        description = "mobile number of the customer", example = "612345789"
+    )
+    private String mobileNumber;
+
+    @Schema(
+        description = "Loan number",
+        example = "123456789012"
+    )
+    @NotEmpty( message = "loan number cannot be null or empty" )
+    @Pattern ( regexp = "^[0-9]{12}$", message = "loan number is not valid" )
+    private String loanNumber;
+
+    @Schema(
+        description = "Loan type",
+        example = "Home Loan"
+    )
+    @NotEmpty( message = "loan type cannot be null or empty" )
+    private String loanType;
+
+    @Positive(message = "total loan amount should be greater than zero")
+    @Schema(
+        description = "total loan amount", example = "100000"
+    )
+    private int totalLoan;
+
+    @PositiveOrZero(message = "total loan amount paid should be equal or greater than zero")
+    @Schema(
+        description = "total loan amount paid", example = "1000"
+    )
+    private int amountPaid;
+
+    @PositiveOrZero(message = "total outstanding amount should be equal or greater than zero")
+    @Schema(
+        description = "total outstanding amount against a loan", example = "99000"
+    )
+    private int outstandingAmount;
+
+}
