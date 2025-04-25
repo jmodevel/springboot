@@ -15,6 +15,15 @@ spring:
           enabled: false
           # accept service with service only in lower case
           lowerCaseServiceId: true
+      httpclient:
+        connect-timeout: 1000 # time gateway is going to take to get a connection thread from the other MS
+        response-timeout: 2s # maximum time gateway is going to wait for a response from MS
+  data:
+    redis:
+      connect-timeout: 2s
+      host: localhost
+      port: 6379
+      timeout: 1s
 
 management:
   endpoints:
@@ -40,3 +49,11 @@ logging:
       jmo:
         devel:
           gateway: DEBUG
+
+resilience4j.circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10 # requests monitored initially
+        permittedNumberOfCallsInHalfOpenState: 2
+        failureRateThreshold: 50 # from open to close
+        waitDurationInOpenState: 10000

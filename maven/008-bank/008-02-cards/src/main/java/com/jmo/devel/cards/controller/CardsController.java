@@ -5,6 +5,7 @@ import com.jmo.devel.cards.dto.CardDto;
 import com.jmo.devel.cards.dto.ContactInfoDto;
 import com.jmo.devel.cards.dto.ResponseDto;
 import com.jmo.devel.cards.service.ICardsService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -161,9 +162,14 @@ public class CardsController {
         responseCode = "200",
         description = "Java version successfully retrieved"
     )
+    @RateLimiter(name = "getJavaVersion", fallbackMethod = "getJavaVersionFallback")
     @GetMapping( "/java-version" )
     public ResponseEntity<String> getJavaVersion() {
         return ResponseEntity.ok( environment.getProperty( "java.version" ) );
+    }
+
+    public ResponseEntity<String> getJavaVersionFallback( Throwable th ) {
+        return ResponseEntity.ok( "Java 17" );
     }
 
     @Operation(

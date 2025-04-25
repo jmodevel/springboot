@@ -39,10 +39,13 @@ public class CustomersService implements ICustomersService {
         customerDetailsDto.setAccount( AccountsMapper.toAccountDto( account ) );
 
         ResponseEntity<LoanDto> loanDtoResponseEntity = loansFeignClient.fetchLoanDetails( correlationId,mobileNumber );
-        customerDetailsDto.setLoan( loanDtoResponseEntity.getBody() );
-
+        if ( null != loanDtoResponseEntity ) {
+            customerDetailsDto.setLoan(loanDtoResponseEntity.getBody());
+        }
         ResponseEntity<CardDto> cardDtoResponseEntity = cardsFeignClient.fetchCardDetails( correlationId, mobileNumber );
-        customerDetailsDto.setCard( cardDtoResponseEntity.getBody() );
+        if( null != cardDtoResponseEntity ) {
+            customerDetailsDto.setCard(cardDtoResponseEntity.getBody());
+        }
 
         return customerDetailsDto;
 

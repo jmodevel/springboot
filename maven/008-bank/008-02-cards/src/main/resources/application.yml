@@ -66,3 +66,10 @@ logging:
       jmo:
         devel:
           cards: DEBUG
+
+resilience4j.ratelimiter:
+  configs:
+    default:
+      timeoutDuration: 1000
+      limitRefreshPeriod: 5000 # for every 5 seconds renew the quota
+      limitForPeriod: 1 # only 1 request per 5 seconds allowed

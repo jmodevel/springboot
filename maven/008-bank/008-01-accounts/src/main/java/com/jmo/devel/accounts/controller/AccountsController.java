@@ -5,13 +5,14 @@ import com.jmo.devel.accounts.dto.ContactInfoDto;
 import com.jmo.devel.accounts.dto.CustomerDto;
 import com.jmo.devel.accounts.dto.ResponseDto;
 import com.jmo.devel.accounts.service.IAccountsService;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Validated
 public class AccountsController {
+
+    private static final Logger logger = LoggerFactory.getLogger( AccountsController.class );
 
     private final IAccountsService accountsService;
 
@@ -140,9 +143,16 @@ public class AccountsController {
         responseCode = "200",
         description = "Build information successfully retrieved"
     )
+    @Retry(name = "getBuildInfo", fallbackMethod = "getBuildInfoFallback")
     @GetMapping( "/build-info" )
     public ResponseEntity<String> getBuildInfo() {
+        logger.debug( "--getBuildInfo: invoked" );
         return ResponseEntity.ok( buildVersion );
+    }
+
+    public ResponseEntity<String> getBuildInfoFallback( Throwable th ){
+        logger.debug( "--getBuildInfoFallback: invoked" );
+        return ResponseEntity.ok( "0.9" );
     }
 
     @Operation(
